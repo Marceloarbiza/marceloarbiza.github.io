@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>A-frame Cheese</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="js/aframe-environment-component.js"></script>
+    <script src="js/controller-listener.js"></script>
+    <script src="js/player-move.js"></script>
+    <script src="js/raycaster-extras.js"></script>
+    <script src="js/physx.release.js"></script>
+    <script src="js/physics.js"></script>
+</head>
+
+<body>
+
+<script>
+
+AFRAME.registerComponent("physics-grab", {
+    init: function ()
+    {
+        let self = this;
+
+        this.el.addEventListener("raycaster-grabbed", function() {
+           self.el.addState("grabbed");
+        });
+
+        this.el.addEventListener("raycaster-released", function() {
+           self.el.removeState("grabbed");
+        });
+    },
+
+    tick: function()
+    {
+
+    }
+});
+
+
+</script>
+
+<a-scene
+    physx="autoLoad: true; delay: 1000; wasmUrl: js/physx.release.wasm; useDefaultScene: false;">
+    <a-assets>
+        <img id="pizza_floor" src="images/pizza-floor.jpg" />
+        <img id="cheese" src="images/cheese_cheese.jpg" />
+        <img id="cheese2" src="images/cheese-back.jpg" />
+        <img id="masaborde" src="images/masaborde.jpg" />
+        <img id="wood" src="images/woodwood.jpg" />
+    </a-assets>
+
+    <a-entity
+    id="player"
+    position="0 1 0"
+    player-move="controllerListenerId: #controller-data;
+                 navigationMeshClass: environmentGround;"
+                 kinematic-body="radius:0.5">
+
+
+    <a-camera kinematic-body="radius:0.5">
+
+    </a-camera>
+
+    <a-entity
+        id="controller-data"
+        controller-listener="leftControllerId:  #left-controller;
+                             rightControllerId: #right-controller;">
+    </a-entity>
+
+    <a-entity
+        id="left-controller"
+        oculus-touch-controls="hand: left">
+    </a-entity>
+
+    <a-entity
+        id="right-controller"
+        oculus-touch-controls="hand: right"
+        raycaster="objects: .raycaster-target, .environmentGround;"
+        raycaster-extras="controllerListenerId: #controller-data;
+                          beamImageSrc: #gradient; beamLength: 0.5;">
+    </a-entity>
+    </a-entity>
+    
+    <a-box
+        physx-body="type: static-body=shape: box"
+        class="environmentGround"
+        position="0 -0.5 -3"
+        width="20" depth="20" height="0.1"
+        material="src: #wood;"
+        shadow="receive: true;"
+    >
+
+    </a-box>
+
+    <a-cylinder physx-body="type: dynamic;"
+        raycaster-target="canGrab: true;"
+        physics-grab
+        position="-3 3 -5" rotation="5 10 15"
+        radius="0.3" height="0.3"
+        material="src: #cheese2;"
+    >
+    </a-cylinder>
+    <a-cylinder physx-body="type: dynamic;"
+        raycaster-target="canGrab: true;"
+        physics-grab
+        position="3 3 -5" rotation="5 10 15"
+        radius="0.3" height="0.3"
+        material="src: #cheese2;"
+    >
+    </a-cylinder>
+    <a-cylinder physx-body="type: dynamic;"
+        raycaster-target="canGrab: true;"
+        physics-grab
+        position="-2 3 -5" rotation="5 10 15"
+        radius="0.3" height="0.3"
+        material="src: #cheese2;"
+    >
+    </a-cylinder>
+    <a-cylinder physx-body="type: dynamic;"
+        raycaster-target="canGrab: true;"
+        physics-grab
+        position="2 3 -5" rotation="5 10 15"
+        radius="0.3" height="0.3"
+        material="src: #cheese2;"
+    >
+    </a-cylinder>
+    <!--<a-triangle 
+        physx-body="type: dynamic;"
+        raycaster-target="canGrab: true;"
+        physics-grab
+        position="-3 3 -5" rotation="5 10 15"
+        height="0.3"
+        material="src: #cheese;"
+    >
+    </a-triangle>-->
+
+    <!-- Pac-man. -->
+    <a-cylinder physx-body="type: dynamic;"
+        raycaster-target="canGrab: true;"
+        physics-grab position="-4 3 -5" 
+        theta-start="2" theta-length="280" side="double"
+        radius="0.3" height="0.3"
+        material="src: #cheese2;"
+        >
+    </a-cylinder>
+    <a-cylinder physx-body="type: static;"
+        raycaster-target="canGrab: true;"
+        physics-grab position="0 3 5" 
+        side="double"
+        radius="3" height="0.3"
+        rotation="-45 0 0"
+        material="src: #pizza_floor;"
+        >
+    </a-cylinder>
+    <a-torus
+        physx-body="type: static;"
+        raycaster-target="canGrab: true;"
+        rotation="45 0 0"
+        physics-grab position="0 3 5"
+        radius="3" radius-tubular="0.1"
+        material="src: #masaborde;"
+    >
+    </a-torus>
+    
+</a-scene>
+</body>
